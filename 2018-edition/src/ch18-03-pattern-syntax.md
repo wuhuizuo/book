@@ -579,7 +579,7 @@ that starts with an underscore. The syntax `_x` still binds the value to the
 variable, whereas `_` doesn’t bind at all. To show a case where this
 distinction matters, Listing 18-21 will provide us with an error.
 
-```rust,ignore
+```rust,ignore,does_not_compile
 let s = Some(String::from("Hello!"));
 
 if let Some(_s) = s {
@@ -674,7 +674,7 @@ compile.
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust,ignore,does_not_compile
 fn main() {
     let numbers = (2, 4, 8, 16, 32);
 
@@ -881,7 +881,7 @@ Using `@` lets us test a value and save it in a variable within one pattern.
 ### Legacy patterns: `ref` and `ref mut`
 
 In older versions of Rust, `match` would assume that you want to move what is
-matched. But sometimes, that's not what you wanted. For example:
+matched. But sometimes, that’s not what you wanted. For example:
 
 ```rust
 let robot_name = &Some(String::from("Bors"));
@@ -895,7 +895,7 @@ println!("robot_name is: {:?}", robot_name);
 ```
 
 Here, `robot_name` is a `&Option<String>`. Rust would then complain that
-`Some(name)` doesn't match up with `&Option<T>`, so you'd have to write this:
+`Some(name)` doesn’t match up with `&Option<T>`, so you’d have to write this:
 
 ```rust,ignore
 let robot_name = &Some(String::from("Bors"));
@@ -909,8 +909,8 @@ println!("robot_name is: {:?}", robot_name);
 ```
 
 Next, Rust would complain that `name` is trying to move the `String` out of
-the option, but because it's a reference to an option, it's borrowed, and so
-can't be moved out of. This is where the `ref` keyword comes into play:
+the option, but because it’s a reference to an option, it’s borrowed, and so
+can’t be moved out of. This is where the `ref` keyword comes into play:
 
 ```rust
 let robot_name = &Some(String::from("Bors"));
@@ -923,17 +923,17 @@ match robot_name {
 println!("robot_name is: {:?}", robot_name);
 ```
 
-The `ref` keyword is like the opposite of `&` in patterns; this says "please
-bind `ref` to be a `&String`, don't try to move it out. In other words, the
+The `ref` keyword is like the opposite of `&` in patterns; this says “please
+bind `ref` to be a `&String`, don’t try to move it out. In other words, the
 `&` in `&Some` is matching against a reference, but `ref` *creates* a
 reference. `ref mut` is like `ref`, but for mutable references.
 
-Anyway, today's Rust doesn't work like this. If you try to `match` on
+Anyway, today’s Rust doesn’t work like this. If you try to `match` on
 something borrowed, then all of the bindings you create will attempt to
-borrow as well. This means that the original code works as you'd expect.
+borrow as well. This means that the original code works as you’d expect.
 
-Because Rust is backwards compatible, we couldn't remove `ref` and `ref mut`,
-and they're sometimes useful in obscure situations, where you want to
+Because Rust is backwards compatible, we couldn’t remove `ref` and `ref mut`,
+and they’re sometimes useful in obscure situations, where you want to
 partially borrow part of a struct as mutable and another part as immutable.
 But you may see them in older Rust code, so knowing what they do is still
 useful.

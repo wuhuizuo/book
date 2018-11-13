@@ -4,7 +4,7 @@ To improve our program, we’ll fix four problems that have to do with the
 program’s structure and how it’s handling potential errors.
 
 First, our `main` function now performs two tasks: it parses arguments and
-opens files. For such a small function, this isn’t a major problem. However, if
+reads files. For such a small function, this isn’t a major problem. However, if
 we continue to grow our program inside `main`, the number of separate tasks the
 `main` function handles will increase. As a function gains responsibilities, it
 becomes more difficult to reason about, harder to test, and harder to change
@@ -12,18 +12,19 @@ without breaking one of its parts. It’s best to separate functionality so each
 function is responsible for one task.
 
 This issue also ties into the second problem: although `query` and `filename`
-are configuration variables to our program, variables like `f` and `contents`
-are used to perform the program’s logic. The longer `main` becomes, the more
-variables we’ll need to bring into scope; the more variables we have in scope,
-the harder it will be to keep track of the purpose of each. It’s best to group
-the configuration variables into one structure to make their purpose clear.
+are configuration variables to our program, variables like `contents` are used
+to perform the program’s logic. The longer `main` becomes, the more variables
+we’ll need to bring into scope; the more variables we have in scope, the harder
+it will be to keep track of the purpose of each. It’s best to group the
+configuration variables into one structure to make their purpose clear.
 
 The third problem is that we’ve used `expect` to print an error message when
-opening the file fails, but the error message just prints `file not found`.
-Opening a file can fail in a number of ways besides the file being missing: for
-example, the file might exist, but we might not have permission to open it.
-Right now, if we’re in that situation, we’d print the `file not found` error
-message, which would give the user the wrong information!
+reading the file fails, but the error message just prints
+`something went wrong`. Reading a file can fail in a number of ways: for
+example, the file could be missing, or we might not have permission to open
+it. Right now, regardless of the situation, we’d print the
+`something went wrong` error message, which wouldn’t give the user any
+information!
 
 Fourth, we use `expect` repeatedly to handle different errors, and if the user
 runs our program without specifying enough arguments, they’ll get an `index out
@@ -305,7 +306,7 @@ fn new(args: &[String]) -> Config {
 <span class="caption">Listing 12-8: Adding a check for the number of
 arguments</span>
 
-This code is similar to the `Guess::new` function we wrote in Listing 9-9, where
+This code is similar to the `Guess::new` function we wrote in Listing 9-10, where
 we called `panic!` when the `value` argument was out of the range of valid
 values. Instead of checking for a range of values here, we’re checking that the
 length of `args` is at least `3` and the rest of the function can operate under
@@ -327,7 +328,7 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
 
 This output is better: we now have a reasonable error message. However, we also
 have extraneous information we don’t want to give to our users. Perhaps using
-the technique we used in Listing 9-9 isn’t the best to use here: a call to
+the technique we used in Listing 9-10 isn’t the best to use here: a call to
 `panic!` is more appropriate for a programming problem rather than a usage
 problem, as discussed in Chapter 9. Instead, we can use the other technique you
 learned about in Chapter 9—returning a `Result` that indicates either success
@@ -422,13 +423,13 @@ case is the static string `not enough arguments` that we added in Listing 12-9,
 to our closure in the argument `err` that appears between the vertical pipes.
 The code in the closure can then use the `err` value when it runs.
 
-We’ve added a new `use` line to import `process` from the standard library. The
-code in the closure that will be run in the error case is only two lines: we
-print the `err` value and then call `process::exit`. The `process::exit`
-function will stop the program immediately and return the number that was
-passed as the exit status code. This is similar to the `panic!`-based handling
-we used in Listing 12-8, but we no longer get all the extra output. Let’s try
-it:
+We’ve added a new `use` line to bring `process` from the standard library into
+scope. The code in the closure that will be run in the error case is only two
+lines: we print the `err` value and then call `process::exit`. The
+`process::exit` function will stop the program immediately and return the
+number that was passed as the exit status code. This is similar to the
+`panic!`-based handling we used in Listing 12-8, but we no longer get all the
+extra output. Let’s try it:
 
 ```text
 $ cargo run
@@ -523,8 +524,8 @@ We’ll cover trait objects in Chapter 17. For now, just know that `Box<dyn
 Error>` means the function will return a type that implements the `Error`
 trait, but we don’t have to specify what particular type the return value
 will be. This gives us flexibility to return error values that may be of
-different types in different error cases. This is what the `dyn` means, it's
-short for "dynamic."
+different types in different error cases. This is what the `dyn` means, it’s
+short for “dynamic.”
 
 Second, we’ve removed the call to `expect` in favor of `?`, as we talked about
 in Chapter 9. Rather than `panic!` on an error, `?` will return the error value
@@ -608,7 +609,6 @@ compile until we modify *src/main.rs* in the listing after this one.
 ```rust,ignore
 use std::error::Error;
 use std::fs;
-use std::io::prelude::*;
 
 pub struct Config {
     pub query: String,
@@ -639,11 +639,10 @@ binary crate in *src/main.rs*, as shown in Listing 12-14:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore
-extern crate minigrep;
-
 use std::env;
 use std::process;
 
+use minigrep;
 use minigrep::Config;
 
 fn main() {
@@ -657,11 +656,11 @@ fn main() {
 <span class="caption">Listing 12-14: Bringing the `minigrep` crate into the
 scope of *src/main.rs*</span>
 
-To bring the library crate into the binary crate, we use `extern crate
-minigrep`. Then we add a `use minigrep::Config` line to bring the `Config` type
-into scope, and we prefix the `run` function with our crate name. Now all the
-functionality should be connected and should work. Run the program with `cargo
-run` and make sure everything works correctly.
+To bring the library crate into the binary crate, we use `use minigrep`.
+Then we add a `use minigrep::Config` line to bring the `Config` type
+into scope as well, and we prefix the `run` function with our crate name. Now
+all the functionality should be connected and should work. Run the program with
+`cargo run` and make sure everything works correctly.
 
 Whew! That was a lot of work, but we’ve set ourselves up for success in the
 future. Now it’s much easier to handle errors, and we’ve made the code more

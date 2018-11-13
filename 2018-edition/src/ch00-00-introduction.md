@@ -147,8 +147,8 @@ principles you might be familiar with.
 
 Chapter 18 is a reference on patterns and pattern matching, which are powerful
 ways of expressing ideas throughout Rust programs. Chapter 19 contains a
-smorgasbord of advanced topics of interest, including unsafe Rust and more
-about lifetimes, traits, types, functions, and closures.
+smorgasbord of advanced topics of interest, including unsafe Rust, macros, and
+more about lifetimes, traits, types, functions, and closures.
 
 In Chapter 20, we’ll complete a project in which we’ll implement a low-level
 multithreaded web server!
@@ -156,11 +156,14 @@ multithreaded web server!
 Finally, some appendixes contain useful information about the language in a
 more reference-like format. Appendix A covers Rust’s keywords, Appendix B
 covers Rust’s operators and symbols, Appendix C covers derivable traits
-provided by the standard library, and Appendix D covers macros.
+provided by the standard library, Appendix D covers some useful development
+tools, and Appendix E explains Rust editions.
 
 There is no wrong way to read this book: if you want to skip ahead, go for it!
 You might have to jump back to earlier chapters if you experience any
 confusion. But do whatever works for you.
+
+<span id="ferris"></span>
 
 An important part of the process of learning Rust is learning how to read the
 error messages the compiler displays: these will guide you toward working code.
@@ -168,12 +171,21 @@ As such, we’ll provide many examples of code that doesn’t compile along with
 the error message the compiler will show you in each situation. Know that if
 you enter and run a random example, it may not compile! Make sure you read the
 surrounding text to see whether the example you’re trying to run is meant to
-error. In most situations, we’ll lead you to the correct version of any code
-that doesn’t compile.
+error. Ferris will also help you distinguish code that isn’t meant to work:
+
+| Ferris                                                                 | Meaning                                          |
+|------------------------------------------------------------------------|--------------------------------------------------|
+| <img src="img/ferris/does_not_compile.svg" class="ferris-explain">     | This code does not compile!                      |
+| <img src="img/ferris/panics.svg" class="ferris-explain">               | This code panics!                                |
+| <img src="img/ferris/unsafe.svg" class="ferris-explain">               | This code block contains unsafe code.            |
+| <img src="img/ferris/not_desired_behavior.svg" class="ferris-explain"> | This code does not produce the desired behavior. |
+
+In most situations, we’ll lead you to the correct version of any code that
+doesn’t compile.
 
 ## Source Code
 
 The source files from which this book is generated can be found on
 [GitHub][book].
 
-[book]: https://github.com/rust-lang/book/tree/master/second-edition/src
+[book]: https://github.com/rust-lang/book/tree/master/2018-edition/src

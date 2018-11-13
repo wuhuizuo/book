@@ -153,7 +153,7 @@ including the comment describing the crate as a whole</span>
 
 Documentation comments within items are useful for describing crates and
 modules especially. Use them to explain the overall purpose of the container to
-help your users understand the crate's organization.
+help your users understand the crate’s organization.
 
 ### Exporting a Convenient Public API with `pub use`
 
@@ -235,15 +235,13 @@ front page, nor is the `mix` function. We have to click `kinds` and `utils` to
 see them.
 
 Another crate that depends on this library would need `use` statements that
-import the items from `art`, specifying the module structure that’s currently
-defined. Listing 14-4 shows an example of a crate that uses the `PrimaryColor`
-and `mix` items from the `art` crate:
+bring the items from `art` into scope, specifying the module structure that’s
+currently defined. Listing 14-4 shows an example of a crate that uses the
+`PrimaryColor` and `mix` items from the `art` crate:
 
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore
-extern crate art;
-
 use art::kinds::PrimaryColor;
 use art::utils::mix;
 
@@ -311,8 +309,6 @@ structure in Listing 14-5, as shown in Listing 14-6:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore
-extern crate art;
-
 use art::PrimaryColor;
 use art::mix;
 

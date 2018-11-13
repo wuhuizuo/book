@@ -4,8 +4,8 @@ The last of our common collections is the *hash map*. The type `HashMap<K, V>`
 stores a mapping of keys of type `K` to values of type `V`. It does this via a
 *hashing function*, which determines how it places these keys and values into
 memory. Many programming languages support this kind of data structure, but
-they often use a different name, such as hash, map, object, hash table, or
-associative array, just to name a few.
+they often use a different name, such as hash, map, object, hash table,
+dictionary, or associative array, just to name a few.
 
 Hash maps are useful when you want to look up data not by using an index, as
 you can with vectors, but by using a key that can be of any type. For example,
@@ -261,7 +261,7 @@ loop, so all of these changes are safe and allowed by the borrowing rules.
 
 ### Hashing Functions
 
-By default, `HashMap` uses a cryptographically secure hashing function that can
+By default, `HashMap` uses a “cryptographically strong”[^siphash] hashing function that can
 provide resistance to Denial of Service (DoS) attacks. This is not the fastest
 hashing algorithm available, but the trade-off for better security that comes
 with the drop in performance is worth it. If you profile your code and find
@@ -272,6 +272,8 @@ implement them in Chapter 10. You don’t necessarily have to implement your own
 hasher from scratch; [crates.io](https://crates.io) has libraries shared by
 other Rust users that provide hashers implementing many common hashing
 algorithms.
+
+[^siphash]: [https://www.131002.net/siphash/siphash.pdf](https://www.131002.net/siphash/siphash.pdf)
 
 ## Summary
 

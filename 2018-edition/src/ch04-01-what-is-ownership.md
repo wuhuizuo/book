@@ -164,7 +164,7 @@ The double colon (`::`) is an operator that allows us to namespace this
 particular `from` function under the `String` type rather than using some sort
 of name like `string_from`. We’ll discuss this syntax more in the “Method
 Syntax” section of Chapter 5 and when we talk about namespacing with modules in
-“Module Definitions” in Chapter 7.
+“Paths for Referring to an Item in the Module Tree” in Chapter 7.
 
 This kind of string *can* be mutated:
 
@@ -319,7 +319,7 @@ considers `s1` to no longer be valid and, therefore, Rust doesn’t need to free
 anything when `s1` goes out of scope. Check out what happens when you try to
 use `s1` after `s2` is created; it won’t work:
 
-```rust,ignore
+```rust,ignore,does_not_compile
 let s1 = String::from("hello");
 let s2 = s1;
 
@@ -426,7 +426,7 @@ be sure, but as a general rule, any group of simple scalar values can be
 * The Boolean type, `bool`, with values `true` and `false`.
 * All the floating point types, such as `f64`.
 * The character type, `char`.
-* Tuples, but only if they contain types that are also `Copy`. For example,
+* Tuples, if they only contain types that are also `Copy`. For example,
   `(i32, i32)` is `Copy`, but `(i32, String)` is not.
 
 ### Ownership and Functions

@@ -14,7 +14,7 @@ smart pointers to work in a similar way as references. Then we’ll look at
 Rust’s *deref coercion* feature and how it lets us work with either references
 or smart pointers.
 
-> There's one big difference between the `MyBox<T>` type we're about to build
+> There’s one big difference between the `MyBox<T>` type we’re about to build
 > and the real `Box<T>`: our version will not store its data on the heap. We
 > are focusing this example on `Deref`, and so where the data is actually stored
 > is less important than the pointer-like behavior.
@@ -131,7 +131,7 @@ code in Listing 15-9 won’t compile because Rust doesn’t know how to derefere
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust,ignore,does_not_compile
 fn main() {
     let x = 5;
     let y = MyBox::new(x);
@@ -211,8 +211,8 @@ call the `deref` method. This Rust feature lets us write code that functions
 identically whether we have a regular reference or a type that implements
 `Deref`.
 
-The reason the `deref` method returns a reference to a value and that the plain
-dereference outside the parentheses in `*(y.deref())` is still necessary is the
+The reason the `deref` method returns a reference to a value, and that the plain
+dereference outside the parentheses in `*(y.deref())` is still necessary, is the
 ownership system. If the `deref` method returned the value directly instead of
 a reference to the value, the value would be moved out of `self`. We don’t want
 to take ownership of the inner value inside `MyBox<T>` in this case or in most

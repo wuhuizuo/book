@@ -11,10 +11,10 @@ Who are you?”
 <span class="filename">Filename: poem.txt</span>
 
 ```text
-I’m nobody! Who are you?
+I'm nobody! Who are you?
 Are you nobody, too?
-Then there’s a pair of us — don’t tell!
-They’d banish us, you know.
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
 
 How dreary to be somebody!
 How public, like a frog
@@ -25,7 +25,7 @@ To an admiring bog!
 <span class="caption">Listing 12-3: A poem by Emily Dickinson makes a good test
 case</span>
 
-With the text in place, edit *src/main.rs* and add code to open the file, as
+With the text in place, edit *src/main.rs* and add code to read the file, as
 shown in Listing 12-4:
 
 <span class="filename">Filename: src/main.rs</span>
@@ -33,7 +33,6 @@ shown in Listing 12-4:
 ```rust,should_panic
 use std::env;
 use std::fs;
-use std::io::prelude::*;
 
 fn main() {
 #     let args: Vec<String> = env::args().collect();
@@ -55,19 +54,13 @@ fn main() {
 <span class="caption">Listing 12-4: Reading the contents of the file specified
 by the second argument</span>
 
-First, we add some more `use` statements to bring in relevant parts of the
-standard library: we need `std::fs` to handle files, and
-`std::io::prelude::*` contains various useful traits for doing I/O, including
-file I/O. In the same way that Rust has a general prelude that brings certain
-types and functions into scope automatically, the `std::io` module has its
-own prelude of common types and functions you’ll need when working with I/O.
-Unlike with the default prelude, we must explicitly add a `use` statement for
-the prelude from `std::io`.
+First, we add another `use` statement to bring in a relevant part of the
+standard library: we need `std::fs` to handle files.
 
 In `main`, we’ve added a new statement: `fs::read_to_string` will take the
-`filename`, open that file, and then produce a new `String` with its contents.
+`filename`, open that file, and then return `Result<String>` with its contents.
 
-After that lines, we’ve again added a temporary `println!` statement that
+After that line, we’ve again added a temporary `println!` statement that
 prints the value of `contents` after the file is read, so we can check that the
 program is working so far.
 

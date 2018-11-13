@@ -1,9 +1,10 @@
 ## Appendix A: Keywords
 
 The following list contains keywords that are reserved for current or future
-use by the Rust language. As such, they cannot be used as identifiers, such as
-names of functions, variables, parameters, struct fields, modules, crates,
-constants, macros, static values, attributes, types, traits, or lifetimes.
+use by the Rust language. As such, they cannot be used as identifiers (except as
+[raw identifiers][raw-identifiers]), including names of functions, variables,
+parameters, struct fields, modules, crates, constants, macros, static values,
+attributes, types, traits, or lifetimes.
 
 ### Keywords Currently in Use
 
@@ -16,6 +17,7 @@ The following keywords currently have the functionality described.
 * `continue` - continue to the next loop iteration
 * `crate` - link an external crate or a macro variable representing the crate in
   which the macro is defined
+* `dyn` - dynamic dispatch to a trait object
 * `else` - fallback for `if` and `if let` control flow constructs
 * `enum` - define an enumeration
 * `extern` - link an external crate, function, or variable
@@ -44,7 +46,7 @@ The following keywords currently have the functionality described.
 * `true` - Boolean true literal
 * `type` - define a type alias or associated type
 * `unsafe` - denote unsafe code, functions, traits, or implementations
-* `use` - import symbols into scope
+* `use` - bring symbols into scope
 * `where` - denote clauses that constrain a type
 * `while` - loop conditionally based on the result of an expression
 
@@ -54,19 +56,62 @@ The following keywords do not have any functionality but are reserved by Rust
 for potential future use.
 
 * `abstract`
-* `alignof`
+* `async`
 * `become`
 * `box`
 * `do`
 * `final`
 * `macro`
-* `offsetof`
 * `override`
 * `priv`
-* `proc`
-* `pure`
-* `sizeof`
+* `try`
 * `typeof`
 * `unsized`
 * `virtual`
 * `yield`
+
+### Raw identifiers
+[raw-identifiers]: #raw-identifiers
+
+Raw identifiers let you use keywords where they would not normally be allowed by
+prefixing them with `r#`.
+
+For example, `match` is a keyword. If you try to compile this function:
+
+```rust,ignore
+fn match(needle: &str, haystack: &str) -> bool {
+    haystack.contains(needle)
+}
+```
+
+You’ll get this error:
+
+```text
+error: expected identifier, found keyword `match`
+ --> src/main.rs:4:4
+  |
+4 | fn match(needle: &str, haystack: &str) -> bool {
+  |    ^^^^^ expected identifier, found keyword
+```
+
+You can write this with a raw identifier:
+
+```rust
+fn r#match(needle: &str, haystack: &str) -> bool {
+    haystack.contains(needle)
+}
+
+fn main() {
+    assert!(r#match("foo", "foobar"));
+}
+```
+
+Note the `r#` prefix on both the function name as well as the call.
+
+#### Motivation
+
+This feature is useful for a few reasons, but the primary motivation was
+inter-edition situations. For example, `try` is not a keyword in the 2015
+edition, but is in the 2018 edition. So if you have a library that is written
+in Rust 2015 and has a `try` function, to call it in Rust 2018, you’ll need
+to use the raw identifier.

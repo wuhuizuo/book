@@ -35,7 +35,6 @@ because we haven’t implemented the `blog` crate yet.
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore
-extern crate blog;
 use blog::Post;
 
 fn main() {
@@ -508,7 +507,7 @@ and `approve` methods on `Post`. Both methods delegate to the implementation of
 the same method on the value in the `state` field of `Option` and set the new
 value of the `state` field to the result. If we had a lot of methods on `Post`
 that followed this pattern, we might consider defining a macro to eliminate the
-repetition (see Appendix D for more on macros).
+repetition (see the “Macros” section in Chapter 19).
 
 By implementing the state pattern exactly as it’s defined for object-oriented
 languages, we’re not taking as full advantage of Rust’s strengths as we could.
@@ -528,6 +527,8 @@ Let’s consider the first part of `main` in Listing 17-11:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore
+# use blog::Post;
+
 fn main() {
     let mut post = Post::new();
 
@@ -667,7 +668,6 @@ The updated code in `main` is shown in Listing 17-21:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore
-extern crate blog;
 use blog::Post;
 
 fn main() {

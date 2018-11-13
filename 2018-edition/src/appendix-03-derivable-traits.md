@@ -15,8 +15,8 @@ library that you can use with `derive`. Each section covers:
 * Examples of operations that require the trait
 
 If you want different behavior than that provided by the `derive` attribute,
-consult the standard library documentation for each trait for details on how to
-manually implement them.
+consult the [standard library documentation](../../std/index.html)
+for each trait for details of how to manually implement them.
 
 The rest of the traits defined in the standard library can’t be implemented on
 your types using `derive`. These traits don’t have sensible default behavior,
@@ -33,7 +33,8 @@ it can’t provide appropriate default behavior for you.
 The list of derivable traits provided in this appendix is not comprehensive:
 libraries can implement `derive` for their own traits, making the list of
 traits you can use `derive` with truly open-ended. Implementing `derive`
-involves using a procedural macro, which is covered in Appendix D.
+involves using a procedural macro, which is covered in the “Macros” section of
+Chapter 19.
 
 ### `Debug` for Programmer Output
 

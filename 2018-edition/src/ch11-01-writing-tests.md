@@ -22,12 +22,11 @@ tests with the `cargo test` command, Rust builds a test runner binary that runs
 the functions annotated with the `test` attribute and reports on whether each
 test function passes or fails.
 
-In Chapter 7, we saw that when we make a new library project with Cargo, a test
-module with a test function in it is automatically generated for us. This
-module helps you start writing your tests so you don’t have to look up the
-exact structure and syntax of test functions every time you start a new
-project. You can add as many additional test functions and as many test modules
-as you want!
+When we make a new library project with Cargo, a test module with a test
+function in it is automatically generated for us. This module helps you start
+writing your tests so you don’t have to look up the exact structure and syntax
+of test functions every time you start a new project. You can add as many
+additional test functions and as many test modules as you want!
 
 We’ll explore some aspects of how tests work by experimenting with the template
 test generated for us without actually testing any code. Then we’ll write some
@@ -157,7 +156,7 @@ which is to call the `panic!` macro. Enter the new test, `another`, so your
 
 <span class="filename">Filename: src/lib.rs</span>
 
-```rust
+```rust,panics
 # fn main() {}
 #[cfg(test)]
 mod tests {
@@ -280,10 +279,10 @@ larger rectangle can indeed hold a smaller rectangle</span>
 
 Note that we’ve added a new line inside the `tests` module: `use super::*;`.
 The `tests` module is a regular module that follows the usual visibility rules
-we covered in Chapter 7 in the “Privacy Rules” section. Because the `tests`
-module is an inner module, we need to bring the code under test in the outer
-module into the scope of the inner module. We use a glob here so anything we
-define in the outer module is available to this `tests` module.
+we covered in Chapter 7 in the “Modules as the Privacy Boundary” section.
+Because the `tests` module is an inner module, we need to bring the code under
+test in the outer module into the scope of the inner module. We use a glob here
+so anything we define in the outer module is available to this `tests` module.
 
 We’ve named our test `larger_can_hold_smaller`, and we’ve created the two
 `Rectangle` instances that we need. Then we called the `assert!` macro and
@@ -340,7 +339,7 @@ introduce a bug in our code. Let’s change the implementation of the `can_hold`
 method by replacing the greater-than sign with a less-than sign when it
 compares the lengths:
 
-```rust
+```rust,not_desired_behavior
 # fn main() {}
 # #[derive(Debug)]
 # pub struct Rectangle {
@@ -436,7 +435,7 @@ Let’s introduce a bug into our code to see what it looks like when a test that
 uses `assert_eq!` fails. Change the implementation of the `add_two` function to
 instead add `3`:
 
-```rust
+```rust,not_desired_behavior
 # fn main() {}
 pub fn add_two(a: i32) -> i32 {
     a + 3
@@ -544,7 +543,7 @@ input parameter.
 Let’s introduce a bug into this code by changing `greeting` to not include
 `name` to see what this test failure looks like:
 
-```rust
+```rust,not_desired_behavior
 # fn main() {}
 pub fn greeting(name: &str) -> String {
     String::from("Hello!")
@@ -602,7 +601,7 @@ debug what happened instead of what we were expecting to happen.
 In addition to checking that our code returns the correct values we expect,
 it’s also important to check that our code handles error conditions as we
 expect. For example, consider the `Guess` type that we created in Chapter 9,
-Listing 9-9. Other code that uses `Guess` depends on the guarantee that `Guess`
+Listing 9-10. Other code that uses `Guess` depends on the guarantee that `Guess`
 instances will contain only values between 1 and 100. We can write a test that
 ensures that attempting to create a `Guess` instance with a value outside that
 range panics.
@@ -619,11 +618,11 @@ happen when we expect them to:
 ```rust
 # fn main() {}
 pub struct Guess {
-    value: u32,
+    value: i32,
 }
 
 impl Guess {
-    pub fn new(value: u32) -> Guess {
+    pub fn new(value: i32) -> Guess {
         if value < 1 || value > 100 {
             panic!("Guess value must be between 1 and 100, got {}.", value);
         }
@@ -663,16 +662,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 Looks good! Now let’s introduce a bug in our code by removing the condition
 that the `new` function will panic if the value is greater than 100:
 
-```rust
+```rust,not_desired_behavior
 # fn main() {}
 # pub struct Guess {
-#     value: u32,
+#     value: i32,
 # }
 #
 // --snip--
 
 impl Guess {
-    pub fn new(value: u32) -> Guess {
+    pub fn new(value: i32) -> Guess {
         if value < 1  {
             panic!("Guess value must be between 1 and 100, got {}.", value);
         }
@@ -716,13 +715,13 @@ different messages depending on whether the value is too small or too large:
 ```rust
 # fn main() {}
 # pub struct Guess {
-#     value: u32,
+#     value: i32,
 # }
 #
 // --snip--
 
 impl Guess {
-    pub fn new(value: u32) -> Guess {
+    pub fn new(value: i32) -> Guess {
         if value < 1 {
             panic!("Guess value must be greater than or equal to 1, got {}.",
                    value);
@@ -766,7 +765,7 @@ To see what happens when a `should_panic` test with an `expected` message
 fails, let’s again introduce a bug into our code by swapping the bodies of the
 `if value < 1` and the `else if value > 100` blocks:
 
-```rust,ignore
+```rust,ignore,not_desired_behavior
 if value < 1 {
     panic!("Guess value must be less than or equal to 100, got {}.", value);
 } else if value > 100 {
@@ -803,8 +802,8 @@ figuring out where our bug is!
 
 ### Using `Result<T, E>` in tests
 
-So far, we've written tests that panic when they fail. We can also write tests
-that use `Result<T, E>` too! Here's that first example, but with results instead:
+So far, we’ve written tests that panic when they fail. We can also write tests
+that use `Result<T, E>` too! Here’s that first example, but with results instead:
 
 ```rust
 #[cfg(test)]
@@ -820,11 +819,11 @@ mod tests {
 }
 ```
 
-Here, we've changed the `it_works` function to return a result. And in the body,
+Here, we’ve changed the `it_works` function to return a result. And in the body,
 rather than `assert_eq!`, we return `Ok(())` for the success case, and an `Err`
 with a `String` inside for the failure case. As before, this test will fail or
 succeed, but instead of being based on panics, it will use the `Result<T, E>` to
-make that determination. Because of this, you can't use `#[should_panic]` with one
+make that determination. Because of this, you can’t use `#[should_panic]` with one
 of these functions; you should have it be returning an `Err` instead!
 
 Now that you know several ways to write tests, let’s look at what is happening

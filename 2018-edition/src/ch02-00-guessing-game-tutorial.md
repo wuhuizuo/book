@@ -360,9 +360,10 @@ library. However, the Rust team does provide a [`rand` crate][randcrate].
 
 ### Using a Crate to Get More Functionality
 
-Remember that a crate is a package of Rust code. The project we’ve been
-building is a *binary crate*, which is an executable. The `rand` crate is a
-*library crate*, which contains code intended to be used in other programs.
+Remember that a crate is a collection of Rust source code files.
+The project we’ve been building is a *binary crate*, which is an executable.
+The `rand` crate is a *library crate*, which contains code intended to be
+used in other programs.
 
 Cargo’s use of external crates is where it really shines. Before we can write
 code that uses `rand`, we need to modify the *Cargo.toml* file to include the
@@ -514,8 +515,6 @@ Now that you’ve added the `rand` crate to *Cargo.toml*, let’s start using
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore
-extern crate rand;
-
 use std::io;
 use rand::Rng;
 
@@ -603,9 +602,7 @@ will explain.
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
-extern crate rand;
-
+```rust,ignore,does_not_compile
 use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
@@ -956,8 +953,6 @@ secret number. Listing 2-5 shows the final code:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore
-extern crate rand;
-
 use std::io;
 use std::cmp::Ordering;
 use rand::Rng;

@@ -43,8 +43,9 @@ fn main() {
 
 <span class="caption">Listing 9-3: Opening a file</span>
 
-How do we know `File::open` returns a `Result`? We could look at the standard
-library API documentation, or we could ask the compiler! If we give `f` a type
+How do we know `File::open` returns a `Result`? We could look at the 
+[standard library API documentation](../../std/index.html),
+or we could ask the compiler! If we give `f` a type
 annotation that we know is *not* the return type of the function and then try
 to compile the code, the compiler will tell us that the types don’t match. The
 error message will then tell us what the type of `f` *is*. Let’s try it! We
@@ -113,8 +114,8 @@ fn main() {
 `Result` variants that might be returned</span>
 
 Note that, like the `Option` enum, the `Result` enum and its variants have been
-imported in the prelude, so we don’t need to specify `Result::` before the `Ok`
-and `Err` variants in the `match` arms.
+brought into scope by the prelude, so we don’t need to specify `Result::`
+before the `Ok` and `Err` variants in the `match` arms.
 
 Here we tell Rust that when the result is `Ok`, return the inner `file` value
 out of the `Ok` variant, and we then assign that file handle value to the
@@ -188,8 +189,8 @@ the file can’t be opened, a different error message will be printed. The last
 arm of the outer `match` stays the same so the program panics on any error
 besides the missing file error.
 
-That's a lot of `match`! `match` is very powerful, but also very much a primitive.
-In Chapter 13, we'll learn about closures. The `Result<T, E>` type has many
+That’s a lot of `match`! `match` is very powerful, but also very much a primitive.
+In Chapter 13, we’ll learn about closures. The `Result<T, E>` type has many
 methods that accept a closure, and are implemented as `match` statements. A more
 seasoned Rustacean might write this:
 
@@ -210,10 +211,10 @@ fn main() {
 }
 ```
 
-Come back to this example after you've read Chapter 13, and look up what the
+Come back to this example after you’ve read Chapter 13, and look up what the
 `map_err` and `unwrap_or_else` methods do in the standard library
-documentation. There's many more of these methods that can clean up huge
-nested `match`es when dealing with errors. We'll be looking at some other
+documentation. There’s many more of these methods that can clean up huge
+nested `match`es when dealing with errors. We’ll be looking at some other
 strategies shortly!
 
 ### Shortcuts for Panic on Error: `unwrap` and `expect`
@@ -316,9 +317,9 @@ fn read_username_from_file() -> Result<String, io::Error> {
 <span class="caption">Listing 9-6: A function that returns errors to the
 calling code using `match`</span>
 
-This function can be written in a much shorter way, but we're going to start by
+This function can be written in a much shorter way, but we’re going to start by
 doing a lot of it manually in order to explore error handling; at the end,
-we'll show the easy way. Let’s look at the return type of the function first:
+we’ll show the easy way. Let’s look at the return type of the function first:
 `Result<String, io::Error>`. This means the function is returning a value of
 the type `Result<T, E>` where the generic parameter `T` has been filled in
 with the concrete type `String`, and the generic type `E` has been filled in
@@ -443,14 +444,13 @@ username in `s` when both `File::open` and `read_to_string` succeed rather than
 returning errors. The functionality is again the same as in Listing 9-6 and
 Listing 9-7; this is just a different, more ergonomic way to write it.
 
-Speaking of different ways to write this function, there's a way to make this even
+Speaking of different ways to write this function, there’s a way to make this even
 shorter:
 
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
 use std::io;
-use std::io::Read;
 use std::fs;
 
 fn read_username_from_file() -> Result<String, io::Error> {
@@ -464,7 +464,7 @@ Reading a file into a string is a fairly common operation, and so Rust
 provides a convenience function called `fs::read_to_string` that will
 open the file, create a new `String`, read the contents of the file,
 and put the contents into that `String`, and then return it. Of course,
-this doesn't give us the opportunity to show off all of this error handling,
+this doesn’t give us the opportunity to show off all of this error handling,
 so we did it the hard way at first.
 
 #### The `?` Operator Can Only Be Used in Functions That Return `Result`
@@ -489,25 +489,37 @@ fn main() {
 When we compile this code, we get the following error message:
 
 ```text
-error[E0277]: the trait bound `(): std::ops::Try` is not satisfied
+error[E0277]: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `std::ops::Try`)
  --> src/main.rs:4:13
   |
 4 |     let f = File::open("hello.txt")?;
-  |             ------------------------
-  |             |
-  |             the `?` operator can only be used in a function that returns
-  `Result` (or another type that implements `std::ops::Try`)
-  |             in this macro invocation
+  |             ^^^^^^^^^^^^^^^^^^^^^^^^ cannot use the `?` operator in a function that returns `()`
   |
   = help: the trait `std::ops::Try` is not implemented for `()`
   = note: required by `std::ops::Try::from_error`
 ```
 
 This error points out that we’re only allowed to use `?` in a function that
-returns `Result`. In functions that don’t return `Result`, when you call other
-functions that return `Result`, you’ll need to use a `match` or one of the
-`Result` methods to handle the `Result` instead of using `?` to potentially
-propagate the error to the calling code.
+returns `Result<T, E>`. In functions that don’t return `Result<T, E>`, when
+you call other functions that return `Result<T, E>`, you’ll need to use a
+`match` or one of the `Result<T, E>` methods to handle the `Result<T, E>`
+instead of using `?` to potentially propagate the error to the calling code.
+
+However, the `main` function can return a `Result<T, E>`:
+
+```rust,ignore
+use std::error::Error;
+use std::fs::File;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let f = File::open("hello.txt")?;
+
+    Ok(())
+}
+```
+
+The `Box<dyn Error>` is called a “trait object”, which we’ll talk about in Chapter 17.
+For now, you can read `Box<dyn Error>` to mean “any kind of error.”
 
 Now that we’ve discussed the details of calling `panic!` or returning `Result`,
 let’s return to the topic of how to decide which is appropriate to use in which

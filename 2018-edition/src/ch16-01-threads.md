@@ -124,7 +124,7 @@ for the operating system to switch between the threads.
 ### Waiting for All Threads to Finish Using `join` Handles
 
 The code in Listing 16-1 not only stops the spawned thread prematurely most of
-the time due to the main thread ending, but also can't guarantee that the
+the time due to the main thread ending, but also can’t guarantee that the
 spawned thread will get to run at all. The reason is that there is no guarantee
 on the order in which threads run!
 
@@ -254,7 +254,7 @@ thread. However, this won’t yet work, as you’ll see in a moment.
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust,ignore,does_not_compile
 use std::thread;
 
 fn main() {
@@ -303,7 +303,7 @@ that won’t be valid:
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust,ignore,does_not_compile
 use std::thread;
 
 fn main() {

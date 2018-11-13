@@ -24,7 +24,7 @@ have the required lifetime annotations, so it won’t compile.
 
 <span class="filename">Filename: src/lib.rs</span>
 
-```rust,ignore
+```rust,ignore,does_not_compile
 struct Context(&str);
 
 struct Parser {
@@ -100,7 +100,7 @@ returns. This code doesn’t quite work.
 
 <span class="filename">Filename: src/lib.rs</span>
 
-```rust,ignore
+```rust,ignore,does_not_compile
 fn parse_context(context: Context) -> Result<(), &str> {
     Parser { context: &context }.parse()
 }
@@ -214,7 +214,7 @@ sufficient when we try to compile.
 
 <span class="filename">Filename: src/lib.rs</span>
 
-```rust,ignore
+```rust,ignore,does_not_compile
 struct Context<'s>(&'s str);
 
 struct Parser<'c, 's> {
@@ -317,7 +317,7 @@ struct is shown in Listing 19-16, without lifetime bounds for now.
 
 <span class="filename">Filename: src/lib.rs</span>
 
-```rust,ignore
+```rust,ignore,does_not_compile
 struct Ref<'a, T>(&'a T);
 ```
 
@@ -443,7 +443,7 @@ the same lifetime specified in the trait object bounds as those references.
 
 ### The anonymous lifetime
 
-Let's say that we have a struct that's a wrapper around a string slice, like
+Let’s say that we have a struct that’s a wrapper around a string slice, like
 this:
 
 ```rust
@@ -459,7 +459,7 @@ fn foo<'a>(string: &'a str) -> StrWrap<'a> {
 }
 ```
 
-But that's a lot of `'a`s! To cut down on some of this noise, we can use the
+But that’s a lot of `'a`s! To cut down on some of this noise, we can use the
 anonymous lifetime, `'_`, like this:
 
 ```rust
@@ -469,8 +469,8 @@ fn foo(string: &str) -> StrWrap<'_> {
 }
 ```
 
-The `'_` says "use the elidied lifetime here." This means that we can still see
-that `StrWrap` contains a reference, but we don't need all of the lifetime
+The `'_` says “use the elidied lifetime here.” This means that we can still see
+that `StrWrap` contains a reference, but we don’t need all of the lifetime
 annotations to make sense of it.
 
 It works in `impl` headers too; for example:
